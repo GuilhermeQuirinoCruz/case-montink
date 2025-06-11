@@ -6,13 +6,15 @@ class Product
     private $name;
     private $price;
     private $variations;
+    private $stock;
 
-    function __construct($id, $name, $price, $variations)
+    function __construct($id, $name, $price, $variations, $stock)
     {
         $this->id = $id;
         $this->name = $name;
         $this->price = $price;
         $this->variations = $variations;
+        $this->stock = $stock;
     }
 
     function getId()
@@ -53,5 +55,15 @@ class Product
     function setVariations($variations)
     {
         $this->variations = $variations;
+    }
+
+    function getStock()
+    {
+        return $this->stock;
+    }
+
+    function setStock($stock)
+    {
+        $this->stock = $stock;
     }
 }

@@ -66,4 +66,20 @@ class Product
     {
         $this->stock = $stock;
     }
+
+    public function toJson()
+    {
+        return get_object_vars($this);
+    }
 }
+
+function getProductFromData($data): Product
+{
+    return new Product(
+        $data["id"],
+        $data["nome"],
+        floatval($data["preco"]),
+        $data["variacoes"],
+        intval($data["quantidade"])
+    );
+};

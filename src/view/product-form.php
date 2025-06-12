@@ -1,28 +1,59 @@
-<?php
-require_once __DIR__ . "/../controller/product-form-controller.php";
-require_once __DIR__ . "/../model/product.php";
-?>
+<div id="product-form">
+    <script type="module" language="javascript" src="/src/view/js/product-form.js">
+    </script>
 
-<h1>Produtos</h1>
+    <?php
+    require_once __DIR__ . "/../controller/product-form-controller.php";
 
-<form action="" method="POST" id="formProduct">
-    <label for="name">Nome:</label>
-    <input type="text" name="name" id="name">
-    <br>
+    $product = new Product(0, "", 0, "", 0);
+    $updateProduct = false;
 
-    <label for="price">Preço (R$):</label>
-    <input type="number" name="price" id="price">
-    <br>
+    if (
+        $_SERVER["REQUEST_METHOD"] == "POST"
+        && isset($_POST["action"])
+        && $_POST["action"] == "getById"
+    ) {
+        $product = getProductById($_POST["productId"]);
+        $updateProduct = true;
+    }
+    ?>
 
-    <label for="variations">Variações:</label>
-    <input type="text" name="variations" id="variations">
-    <br>
+    <h1>Produtos</h1>
 
-    <label for="stock">Estoque:</label>
-    <input type="number" name="stock" id="stock">
-    <br>
+    <form action="" method="POST" id="formProduct">
+        <?php
+        if ($product->getId() != 0) {
+            echo "
+                <label for='productid'>Id:</label>
+                <input type='number' name='productid' id='productid' value=" . $product->getId() . " disabled>
+                <br>
+                ";
+        }
+        ?>
 
-    <button type="submit" id="btnSubmitFormProduct">Cadastrar</button>
-</form>
+        <label for="name">Nome:</label>
+        <input type="text" name="name" id="name" value=<?php echo $product->getName() ?>>
+        <br>
 
-<script type="text/javascript" language="javascript" src="product-form.js"></script>
+        <label for="price">Preço (R$):</label>
+        <input type="number" name="price" id="price" value=<?php echo $product->getPrice() ?>>
+        <br>
+
+        <label for="variations">Variações:</label>
+        <input type="text" name="variations" id="variations" value=<?php echo $product->getVariations() ?>>
+        <br>
+
+        <label for="stock">Estoque:</label>
+        <input type="number" name="stock" id="stock" value=<?php echo $product->getStock() ?>>
+        <br>
+
+        <?php
+        if ($updateProduct) {
+            echo "<button id='btnUpdate'>Editar</button>";
+            echo "<button id='btnCancel'>Cancelar</button>";
+        } else {
+            echo "<button id='btnInsert'>Cadastrar</button>";
+        }
+        ?>
+    </form>
+</div>

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,16 +9,17 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     
+    <link rel="icon" href="data:,">
     <title>Sistema ERP</title>
 </head>
 
 <body>
     <h1>Sistema ERP</h1>
-    <?php include "./src/view/product-form.php" ?>
+    <?php require_once "./src/view/product-form.php" ?>
 
     <br />
 
-    <?php include "./src/view/product-list.php" ?>
+    <?php require_once "./src/view/product-list.php" ?>
 </body>
 
 </html>

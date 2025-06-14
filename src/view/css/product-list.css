@@ -1,0 +1,8 @@
+.table-product-list th {
+    position: sticky;
+    top: 0px;
+}
+
+td {
+    vertical-align: center;
+}

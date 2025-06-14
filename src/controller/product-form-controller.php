@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . "/../model/product.php";
-require_once __DIR__ . "/db.php";
+
+$product = null;
+$fill = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST["action"])) {
@@ -9,107 +11,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     switch ($_POST["action"]) {
         case "insert":
-            insertProduct();
+            handleProductInsert();
+            break;
+        case "fill":
+            $product = getProductById($_POST["productId"]);
+            $fill = true;
             break;
         case "update":
-            updateProduct();
+            handleProductUpdate();
             break;
     }
 }
 
-function insertProduct()
+function handleProductInsert()
 {
     if (empty($_POST["product"])) {
         echo "Dados inválidos";
         return;
     }
 
-    $product = new Product(
-        0,
-        htmlspecialchars($_POST["product"]["name"]),
-        floatval(htmlspecialchars($_POST["product"]["price"])),
-        htmlspecialchars($_POST["product"]["variations"]),
-        intval(htmlspecialchars($_POST["product"]["stock"])),
-    );
-
-    $pdo = getPdo();
-    $query = "
-    START TRANSACTION;
-
-    INSERT INTO produto (nome, preco, variacoes)
-    VALUES (:nome, :preco, :variacoes);
-
-    INSERT INTO estoque (id_produto, quantidade)
-    SELECT LAST_INSERT_ID(), :quantidade;
-
-    COMMIT;";
-
-    $stmt = $pdo->prepare($query);
-
-    $stmt->execute([
-        ":nome" => $product->getName(),
-        ":preco" => $product->getPrice(),
-        ":variacoes" => $product->getVariations(),
-        ":quantidade" => $product->getStock()
-    ]);
+    $_POST["product"]["id"] = 0;
+    insertProduct(getProductFromRequest($_POST));
 }
 
-function getProductById($id)
+function handleProductUpdate()
 {
-    $pdo = getPdo();
-    $query = "
-    SELECT p.id, p.nome, p.preco, p.variacoes, e.quantidade
-    FROM produto AS p
-    JOIN estoque AS e ON p.id = e.id_produto
-    WHERE p.id = :id_produto";
-
-    $stmt = $pdo->prepare($query);
-
-    $stmt->execute([
-        ":id_produto" => $id,
-    ]);
-
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-    $product = getProductFromData($data);
-
-    return $product;
-}
-
-function updateProduct() {
     if (empty($_POST["product"])) {
         echo "Dados inválidos";
         return;
     }
 
-    $product = new Product(
-        intval($_POST["product"]["id"]),
-        htmlspecialchars($_POST["product"]["name"]),
-        floatval(htmlspecialchars($_POST["product"]["price"])),
-        htmlspecialchars($_POST["product"]["variations"]),
-        intval(htmlspecialchars($_POST["product"]["stock"])),
-    );
-
-    $pdo = getPdo();
-    $query = "
-    START TRANSACTION;
-
-    UPDATE produto
-    SET nome = :nome, preco = :preco, variacoes = :variacoes
-    WHERE id = :id_produto;
-
-    UPDATE estoque
-    SET quantidade = :quantidade
-    WHERE id_produto = :id_produto;
-
-    COMMIT;";
-
-    $stmt = $pdo->prepare($query);
-
-    $stmt->execute([
-        ":id_produto" => $product->getId(),
-        ":nome" => $product->getName(),
-        ":preco" => $product->getPrice(),
-        ":variacoes" => $product->getVariations(),
-        ":quantidade" => $product->getStock()
-    ]);
+    updateProduct(getProductFromRequest($_POST));
 }

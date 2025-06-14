@@ -1,0 +1,12 @@
+.product-cart-title {
+    background-color: yellow;
+}
+
+.product-cart-list {
+    height: 70vh;
+    background-color: chartreuse;
+}
+
+.product-cart-checkout {
+    background-color: darkblue;
+}

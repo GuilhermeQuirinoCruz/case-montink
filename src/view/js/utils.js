@@ -1,12 +1,12 @@
 export function getProductFromForm(form) {
   const formData = new FormData(form);
-  
+
   return {
-    id: formData.get("productid") || 0,
-    name: formData.get("name"),
-    price: formData.get("price"),
-    variations: formData.get("variations"),
-    stock: formData.get("stock"),
+    id: formData.get("productId") || 0,
+    name: formData.get("productName"),
+    price: formData.get("productPrice"),
+    variations: formData.get("productVariations"),
+    stock: formData.get("productStock"),
   };
 }
 
@@ -22,4 +22,44 @@ export function sendAjaxRequest(type, url, data, successFunction) {
       alert("Error: " + errorThrown);
     },
   });
+}
+
+export function enforceNumbersOnly(input, isFloat) {
+  input.addEventListener("keypress", (e) => {
+    if (isNumber(e.key)) {
+      return;
+    }
+
+    if (isFloat && e.key == ".") {
+      return;
+    }
+
+    e.preventDefault();
+
+    // if (e.key != "." || !isFloat) {
+    //   e.preventDefault();
+    //   return;
+    // }
+
+    // if (input.value.includes(".")) {
+    //   e.preventDefault();
+    // }
+  });
+
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+
+    let pastedValue = e.clipboardData.getData("text");
+
+    pastedValue = pastedValue.replace(/\D^\./g, "");
+    if (!isFloat) {
+      pastedValue = pastedValue.replace(/\./, "");
+    }
+
+    input.value += pastedValue;
+  });
+}
+
+function isNumber(value) {
+  return value in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 }

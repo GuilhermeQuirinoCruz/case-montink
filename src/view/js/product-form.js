@@ -1,8 +1,15 @@
-import { getProductFromForm, sendAjaxRequest } from "./utils.js";
+import {
+  enforceNumbersOnly,
+  getProductFromForm,
+  sendAjaxRequest,
+} from "./utils.js";
 
 function sendFormRequest(form, action) {
   const product = getProductFromForm(form);
-  product["id"] = document.getElementById("productid").value;
+  const productIdInput = document.getElementById("productId");
+  if (productIdInput) {
+    product["id"] = productIdInput.value;
+  }
 
   sendAjaxRequest(
     "POST",
@@ -22,6 +29,9 @@ function addFormListeners() {
   document.getElementById("formProduct").addEventListener("submit", (e) => {
     e.preventDefault();
   });
+
+  enforceNumbersOnly(document.getElementById("productPrice"), true);
+  enforceNumbersOnly(document.getElementById("productStock"), false);
 }
 
 function addInsertListeners() {

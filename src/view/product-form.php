@@ -4,56 +4,75 @@
 
     <?php
     require_once __DIR__ . "/../controller/product-form-controller.php";
-
-    $product = new Product(0, "", 0, "", 0);
-    $updateProduct = false;
-
-    if (
-        $_SERVER["REQUEST_METHOD"] == "POST"
-        && isset($_POST["action"])
-        && $_POST["action"] == "getById"
-    ) {
-        $product = getProductById($_POST["productId"]);
-        $updateProduct = true;
-    }
     ?>
 
     <h1>Produtos</h1>
 
-    <form action="" method="POST" id="formProduct">
+    <form class="rounded bg-light p-2" action="" method="POST" id="formProduct">
         <?php
-        if ($product->getId() != 0) {
+        if ($product) {
             echo "
-                <label for='productid'>Id:</label>
-                <input type='number' name='productid' id='productid' value=" . $product->getId() . " disabled>
+                <label for='productid' class='form-label'>Id:</label>
+                <input class='form-control' type='number' name='productId' id='productId'
+                value=" . $product->getId() . " disabled>
                 <br>
                 ";
         }
         ?>
 
-        <label for="name">Nome:</label>
-        <input type="text" name="name" id="name" value=<?php echo $product->getName() ?>>
-        <br>
+        <div class="mb-3">
+            <label class='form-label' for="name">Nome:</label>
+            <input class="form-control" type="text"
+                name="productName" id="productName"
+                value=<?php if ($product) {
+                            echo $product->getName();
+                        } ?>>
+        </div>
 
-        <label for="price">Preço (R$):</label>
-        <input type="number" name="price" id="price" value=<?php echo $product->getPrice() ?>>
-        <br>
+        <div class="mb-3">
+            <label class='form-label' for="price">Preço (R$):</label>
+            <input class="form-control" type="number" min=0
+                name="productPrice" id="productPrice"
+                value=<?php if ($product) {
+                            echo $product->getPrice();
+                        } ?>>
+        </div>
 
-        <label for="variations">Variações:</label>
-        <input type="text" name="variations" id="variations" value=<?php echo $product->getVariations() ?>>
-        <br>
+        <div class="mb-3">
+            <label class='form-label' for="variations">Variações:</label>
+            <textarea class="form-control" type="textarea" rows=2
+                name="productVariations" id="productVariations"><?php if ($product) {
+                                                                    echo $product->getVariations();
+                                                                } ?></textarea>
+        </div>
 
-        <label for="stock">Estoque:</label>
-        <input type="number" name="stock" id="stock" value=<?php echo $product->getStock() ?>>
-        <br>
+        <div class="mb-3">
+            <label class='form-label' for="stock">Estoque:</label>
+            <input class="form-control" type="number" min=0
+                name="productStock" id="productStock"
+                value=<?php if ($product) {
+                            echo $product->getStock();
+                        } ?>>
+        </div>
 
-        <?php
-        if ($updateProduct) {
-            echo "<button id='btnUpdate'>Editar</button>";
-            echo "<button id='btnCancel'>Cancelar</button>";
-        } else {
-            echo "<button id='btnInsert'>Cadastrar</button>";
-        }
-        ?>
+        <div class="row justify-content-end">
+            <?php
+            if ($fill) {
+                echo "
+                <div class='col-sm-auto'>
+                <button class='btn btn-warning' id='btnUpdate'>Editar</button>
+                </div>";
+                echo "
+                <div class='col-sm-auto'>
+                <button class='btn btn-danger' id='btnCancel'>Cancelar</button>
+                </div>";
+            } else {
+                echo "
+                <div class='col-sm-auto'>
+                <button class='btn btn-primary' id='btnInsert'>Cadastrar</button>
+                </div>";
+            }
+            ?>
+        </div>
     </form>
 </div>

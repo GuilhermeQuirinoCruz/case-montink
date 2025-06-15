@@ -218,3 +218,23 @@ function deleteProduct($id)
         echo $e;
     }
 }
+
+function updateProductStock($id, $stock) {
+    try {
+        $pdo = getPdo();
+
+        $query = "
+        UPDATE estoque
+        SET quantidade = :quantidade
+        WHERE id_produto = :id_produto;";
+
+        $stmt = $pdo->prepare($query);
+
+        $stmt->execute([
+            ":id_produto" => $id,
+            ":quantidade" => $stock
+        ]);
+    } catch (Exception $e) {
+        echo $e;
+    }
+}

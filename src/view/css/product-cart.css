@@ -3,10 +3,6 @@
 }
 
 .product-cart-list {
-    height: 70vh;
+    height: 60vh;
     background-color: chartreuse;
-}
-
-.product-cart-checkout {
-    background-color: darkblue;
 }

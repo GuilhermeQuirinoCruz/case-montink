@@ -10,12 +10,11 @@ export function getProductFromForm(form) {
   };
 }
 
-export function sendAjaxRequest(type, url, data, successFunction) {
-  $.ajax({
+export async function sendAjaxRequest(type, url, data, successFunction) {
+  return $.ajax({
     type: type,
     url: url,
     data: data,
-    async: true,
     success: successFunction,
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert("Status: " + textStatus);
@@ -26,7 +25,7 @@ export function sendAjaxRequest(type, url, data, successFunction) {
 
 export function enforceNumbersOnly(input, isFloat) {
   input.addEventListener("keypress", (e) => {
-    if (isNumber(e.key)) {
+    if (isDigit(e.key)) {
       return;
     }
 
@@ -60,6 +59,6 @@ export function enforceNumbersOnly(input, isFloat) {
   });
 }
 
-function isNumber(value) {
+function isDigit(value) {
   return value in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 }

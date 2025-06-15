@@ -1,10 +1,15 @@
 <?php
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+require_once __DIR__ . "/src/model/order.php";
+
 if (!isset($_SESSION["product-cart"])) {
     $_SESSION["product-cart"] = [];
+    $_SESSION["product-cart-total"] = 0;
+    $_SESSION["order-shipping"] = 0;
 }
 ?>
 

@@ -24,9 +24,9 @@
             <label class='form-label' for="name">Nome:</label>
             <input class="form-control" type="text"
                 name="productName" id="productName"
-                value=<?php if ($product) {
+                value="<?php if ($product) {
                             echo $product->getName();
-                        } ?>>
+                        } ?>">
         </div>
 
         <div class="mb-3">
@@ -41,6 +41,7 @@
         <div class="mb-3">
             <label class='form-label' for="variations">Variações:</label>
             <textarea class="form-control" type="textarea" rows=2
+                style="white-space: pre-wrap;";
                 name="productVariations" id="productVariations"><?php if ($product) {
                                                                     echo $product->getVariations();
                                                                 } ?></textarea>
@@ -60,11 +61,12 @@
             if ($fill) {
                 echo "
                 <div class='col-sm-auto'>
-                <button class='btn btn-warning' id='btnUpdate'>Editar</button>
+                <button class='btn btn-danger' id='btnCancel'>Cancelar</button>
                 </div>";
+
                 echo "
                 <div class='col-sm-auto'>
-                <button class='btn btn-danger' id='btnCancel'>Cancelar</button>
+                <button class='btn btn-warning' id='btnUpdate'>Editar</button>
                 </div>";
             } else {
                 echo "

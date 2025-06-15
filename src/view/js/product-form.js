@@ -4,7 +4,9 @@ import {
   sendAjaxRequest,
 } from "./utils.js";
 
-function sendFormRequest(form, action) {
+import { updateCartProduct } from "./product-cart.js";
+
+function sendFormRequest(form, action, updateCart) {
   const product = getProductFromForm(form);
   const productIdInput = document.getElementById("productId");
   if (productIdInput) {
@@ -18,8 +20,13 @@ function sendFormRequest(form, action) {
       action: action,
       product: product,
     },
-    function (response) {
+    async function (response) {
       form.reset();
+
+      if (updateCart) {
+        await updateCartProduct("updateData", product["id"]);
+      }
+
       location.reload();
     }
   );
@@ -38,7 +45,7 @@ function addInsertListeners() {
   const btnInsert = document.getElementById("btnInsert");
   if (btnInsert) {
     btnInsert.addEventListener("click", (e) => {
-      sendFormRequest(document.getElementById("formProduct"), "insert");
+      sendFormRequest(document.getElementById("formProduct"), "insert", false);
     });
   }
 }
@@ -49,7 +56,7 @@ export function addUpdateListeners() {
   const btnUpdate = document.getElementById("btnUpdate");
   if (btnUpdate) {
     btnUpdate.addEventListener("click", (e) => {
-      sendFormRequest(document.getElementById("formProduct"), "update");
+      sendFormRequest(document.getElementById("formProduct"), "update", true);
     });
   }
 

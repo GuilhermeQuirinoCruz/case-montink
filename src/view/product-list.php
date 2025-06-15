@@ -20,7 +20,7 @@ if (count($products) == 0) {
     <div class="overflow-scroll" style="height: 25rem;">
         <table class="table table-striped table-hover table-product-list">
             <thead>
-                <tr>
+                <tr class="align-middle">
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Preço (R$)</th>
@@ -37,8 +37,8 @@ if (count($products) == 0) {
                     <tr class="align-middle">
                         <td><?php echo $product->getId() ?></td>
                         <td><?php echo $product->getName() ?></td>
-                        <td><?php echo $product->getPrice() ?></td>
-                        <td><?php echo $product->getVariations() ?></td>
+                        <td><?php echo number_format($product->getPrice(), 2) ?></td>
+                        <td style="white-space: pre-wrap;" ;><?php echo $product->getVariations() ?></td>
                         <td><?php echo $product->getStock() ?></td>
                         <td>
                             <div class="d-flex justify-content-center">

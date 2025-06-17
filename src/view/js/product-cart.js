@@ -1,27 +1,36 @@
-import { enforceNumbersOnly, sendAjaxRequest } from "./utils.js";
+import {
+  enforceNumbersOnly,
+  sendAjaxRequest,
+  showMessageModal,
+} from "./utils.js";
+
+import { updateProductList } from "./product-list.js";
 
 function setupCart() {
   addRemoveListeners();
   addEnforceNumbersListeners();
   addUpdateAmountListeners();
+  addZipCodeListeners();
   addCheckoutListeners();
 }
 
 export function updateCart(html) {
-  document.getElementById("product-cart").innerHTML = html;
+  document.getElementById("productCart").innerHTML = html;
 
   setupCart();
 }
 
-export async function updateCartProduct(action, id) {
-  await sendAjaxRequest(
+export function updateCartProduct(action, id) {
+  sendAjaxRequest(
     "POST",
-    "src/controller/product-cart-controller.php",
+    "src/view/product-cart.php",
     {
       action: action,
       productId: id,
     },
-    function () {}
+    function (response) {
+      updateCart(response);
+    }
   );
 }
 
@@ -68,6 +77,12 @@ function addUpdateAmountListeners() {
   });
 }
 
+function addZipCodeListeners() {
+  const zipCode = document.getElementById("zipCode");
+
+  enforceNumbersOnly(zipCode, false);
+}
+
 function addCheckoutListeners() {
   const btnCheckout = document.getElementById("btnCheckout");
   if (btnCheckout) {
@@ -79,11 +94,23 @@ function addCheckoutListeners() {
           action: "checkout",
         },
         function (response) {
-          location.reload();
+          response = JSON.parse(response);
+
+          if (response["success"]) {
+            showMessageModal(response["title"], response["message"]);
+            refreshProductCart();
+            updateProductList();
+          }
         }
       );
     });
   }
+}
+
+function refreshProductCart() {
+  sendAjaxRequest("GET", "src/view/product-cart.php", {}, function (response) {
+    updateCart(response);
+  });
 }
 
 $(document).ready(function () {

@@ -23,6 +23,21 @@ export async function sendAjaxRequest(type, url, data, successFunction) {
   });
 }
 
+export function showMessageModal(title, message) {
+  sendAjaxRequest(
+    "POST",
+    "src/view/message-modal.php",
+    {
+      modalTitle: title,
+      modalMessage: message,
+    },
+    function (response) {
+      document.getElementById("modalContainer").innerHTML = response;
+      $("#messageModal").modal("toggle");
+    }
+  );
+}
+
 export function enforceNumbersOnly(input, isFloat) {
   input.addEventListener("keypress", (e) => {
     if (isDigit(e.key)) {
@@ -45,18 +60,17 @@ export function enforceNumbersOnly(input, isFloat) {
     // }
   });
 
-  input.addEventListener("paste", (e) => {
-    e.preventDefault();
+  // input.addEventListener("paste", (e) => {
+  //   const previousValue = input.value;
+  //   let pastedValue = e.clipboardData.getData("text");
 
-    let pastedValue = e.clipboardData.getData("text");
+  //   pastedValue = pastedValue.replace(/\D/g, "");
+  //   if (!isFloat) {
+  //     pastedValue = pastedValue.replace(/\./, "");
+  //   }
 
-    pastedValue = pastedValue.replace(/\D^\./g, "");
-    if (!isFloat) {
-      pastedValue = pastedValue.replace(/\./, "");
-    }
-
-    input.value += pastedValue;
-  });
+  //   input.value = previousValue + pastedValue;
+  // });
 }
 
 function isDigit(value) {

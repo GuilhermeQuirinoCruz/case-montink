@@ -43,21 +43,26 @@ if (count($products) == 0) {
                         <td>
                             <div class="d-flex justify-content-center">
                                 <?php echo "<button class='btn btn-warning' name='btnUpdateProduct'
-                productid=" . $product->getId() . ">✏️</button>" ?>
+            productid=" . $product->getId() . ">✏️</button>" ?>
                             </div>
                         </td>
 
                         <td>
                             <div class="d-flex justify-content-center">
                                 <?php echo "<button class='btn btn-danger' name='btnDeleteProduct'
-                productid=" . $product->getId() . ">🗑️</button>" ?>
+            productid=" . $product->getId() . ">🗑️</button>" ?>
                             </div>
                         </td>
 
                         <td>
                             <div class="d-flex justify-content-center">
-                                <?php echo "<button class='btn btn-success' name='btnAddToCart'
-                            productid=" . $product->getId() . ">+</button>" ?>
+                                <?php if ($product->getStock() > 0) {
+                                    echo "<button class='btn btn-success' name='btnAddToCart'
+                                    productid=" . $product->getId() . ">+</button>";
+                                } else {
+                                    echo "Sem estoque";
+                                }
+                                ?>
                             </div>
                         </td>
                     </tr>

@@ -17,5 +17,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function handleDeleteProduct()
 {
-    deleteProduct(intval(htmlspecialchars($_POST["productId"])));
+    deleteProduct(intval($_POST["productId"]));
 }

@@ -2,7 +2,14 @@ import { sendAjaxRequest } from "./utils.js";
 import { addUpdateListeners } from "./product-form.js";
 import { updateCart, updateCartProduct } from "./product-cart.js";
 
-$(document).ready(function () {
+export function updateProductList() {
+  sendAjaxRequest("GET", "src/view/product-list.php", {}, function (response) {
+    document.getElementById("productList").innerHTML = response;
+    addListListeners();
+  });
+}
+
+function addListListeners() {
   document.querySelectorAll("[name='btnUpdateProduct']").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       sendAjaxRequest(
@@ -13,7 +20,7 @@ $(document).ready(function () {
           productId: btn.getAttribute("productid"),
         },
         function (response) {
-          document.getElementById("product-form").innerHTML = response;
+          document.getElementById("productForm").innerHTML = response;
           addUpdateListeners();
         }
       );
@@ -32,7 +39,7 @@ $(document).ready(function () {
           productId: productId,
         },
         async function (response) {
-          await updateCartProduct("remove", productId);
+          updateCartProduct("remove", productId);
           location.reload();
         }
       );
@@ -54,4 +61,8 @@ $(document).ready(function () {
       );
     });
   });
+}
+
+$(document).ready(function () {
+  addListListeners();
 });

@@ -9,37 +9,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return;
     }
 
+    if ($_POST["action"] == "fill") {
+        $product = getProductById($_POST["productId"]);
+        $fill = true;
+        return;
+    }
+
+    $product = getProductFromRequest($_POST);
+    if (!$product) {
+        echo getStatusAsJSON(false, "Erro", "Produto vazio");
+        return;
+    }
+
+    $message = getInvalidDataMessage($product);
+    if (strlen($message) != 0) {
+        echo getStatusAsJSON(false, "Informações incorretas", $message);
+        return;
+    }
+
+    $successMessage = "";
     switch ($_POST["action"]) {
         case "insert":
-            handleProductInsert();
-            break;
-        case "fill":
-            $product = getProductById($_POST["productId"]);
-            $fill = true;
+            $successMessage = handleProductInsert($product);
             break;
         case "update":
-            handleProductUpdate();
+            $successMessage = handleProductUpdate($product);
             break;
     }
+
+    echo getStatusAsJSON(true, "Operação bem-sucedida", $successMessage);
 }
 
-function handleProductInsert()
+function getStatusAsJSON($success, $title, $message)
 {
-    if (empty($_POST["product"])) {
-        echo "Dados inválidos";
-        return;
-    }
-
-    $_POST["product"]["id"] = 0;
-    insertProduct(getProductFromRequest($_POST));
+    return json_encode(array(
+        "success" => $success,
+        "title" => $title,
+        "message" => nl2br($message)
+    ));
 }
 
-function handleProductUpdate()
+function getInvalidDataMessage($product)
 {
-    if (empty($_POST["product"])) {
-        echo "Dados inválidos";
-        return;
+    $message = "";
+    if (strlen($product->getName()) == 0) {
+        $message .= "O nome não pode ser vazio\n";
     }
 
-    updateProduct(getProductFromRequest($_POST));
+    if ($product->getStock() < 0) {
+        $message .= "O estoque deve ser um número maior ou igual a zero\n";
+    }
+
+    if ($product->getPrice() < 0) {
+        $message .= "O preço deve ser um número maior ou igual a zero";
+    }
+
+    $message = rtrim($message, "\n");
+
+    return $message;
+}
+
+function handleProductInsert($product)
+{
+    $product->setId(0);
+    insertProduct($product);
+
+    return "Novo produto cadastrado: <strong>" . $product->getName() . "</strong>";
+}
+
+function handleProductUpdate($product)
+{
+    updateProduct($product);
+
+    return "Produto editado com sucesso";
 }

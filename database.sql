@@ -13,7 +13,7 @@ CREATE TABLE produto(
 CREATE TABLE estoque(
     id_produto INT NOT NULL,
     quantidade INT NOT NULL,
-    FOREIGN KEY(id_produto) REFERENCES produto(id)
+    FOREIGN KEY(id_produto) REFERENCES produto(id) ON DELETE CASCADE
 );
 
 CREATE TABLE pedido(

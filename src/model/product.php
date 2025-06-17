@@ -87,13 +87,23 @@ function getProductFromData($data): Product
 
 function getProductFromRequest($request): Product
 {
+    $id = $request["product"]["id"];
+    $name = $request["product"]["name"];
+    $price = $request["product"]["price"];
+    $variations = $request["product"]["variations"];
+    $stock = $request["product"]["stock"];
+
     return new Product(
-        intval(htmlspecialchars($request["product"]["id"])),
-        htmlspecialchars($request["product"]["name"]),
-        floatval(htmlspecialchars($request["product"]["price"])),
-        htmlspecialchars($request["product"]["variations"]),
-        intval(htmlspecialchars($request["product"]["stock"])),
+        is_numeric($id) ? intval(htmlspecialchars($id)) : -1,
+        $name ? htmlspecialchars($name) : "",
+        is_numeric($price) ? intval(htmlspecialchars($price)) : -1,
+        $variations ? htmlspecialchars($variations) : "",
+        is_numeric($stock) ? intval(htmlspecialchars($stock)) : -1,
     );
+}
+
+function validadeProductData($product) {
+    return $product->getName() != "";
 }
 
 function getProductById($id)
@@ -203,11 +213,12 @@ function deleteProduct($id)
         $pdo = getPdo();
 
         $query = "
-        DELETE FROM estoque
-        WHERE id_produto = :id_produto;
+        START TRANSACTION;
 
         DELETE FROM produto
-        WHERE id = :id_produto;";
+        WHERE id = :id_produto;
+        
+        COMMIT;";
 
         $stmt = $pdo->prepare($query);
 
@@ -224,9 +235,13 @@ function updateProductStock($id, $stock) {
         $pdo = getPdo();
 
         $query = "
+        START TRANSACTION;
+
         UPDATE estoque
         SET quantidade = :quantidade
-        WHERE id_produto = :id_produto;";
+        WHERE id_produto = :id_produto;
+        
+        COMMIT;";
 
         $stmt = $pdo->prepare($query);
 

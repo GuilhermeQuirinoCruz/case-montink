@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             updateProductData($_POST["productId"]);
             break;
         case "checkout":
-            checkout();
+            echo checkout();
             break;
     }
 
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 function setProductData($id)
 {
     $product = getProductById($id);
-    $_SESSION["product-cart"][$id] = array(
+    $_SESSION["productCart"][$id] = array(
         "name" => $product->getName(),
         "price" => $product->getPrice(),
         "stock" => $product->getStock(),
@@ -45,7 +45,7 @@ function setProductData($id)
 
 function addProductToCart($id)
 {
-    if (isset($_SESSION["product-cart"][$id])) {
+    if (isset($_SESSION["productCart"][$id])) {
         return;
     }
 
@@ -55,21 +55,21 @@ function addProductToCart($id)
 
 function removeProductFromCart($id)
 {
-    unset($_SESSION["product-cart"][$id]);
+    unset($_SESSION["productCart"][$id]);
 }
 
 function updateProductAmount($id, $amount)
 {
-    if (!isset($_SESSION["product-cart"][$id])) {
+    if (!isset($_SESSION["productCart"][$id])) {
         return;
     }
 
-    $_SESSION["product-cart"][$id]["amount"] = $amount;
+    $_SESSION["productCart"][$id]["amount"] = $amount;
 }
 
 function updateProductData($id)
 {
-    if (!isset($_SESSION["product-cart"][$id])) {
+    if (!isset($_SESSION["productCart"][$id])) {
         return;
     }
 
@@ -78,12 +78,12 @@ function updateProductData($id)
 
 function updateProductTotal()
 {
-    $_SESSION["product-cart-total"] = 0;
+    $_SESSION["productCartTotal"] = 0;
     $total = 0;
-    foreach ($_SESSION["product-cart"] as $product) {
+    foreach ($_SESSION["productCart"] as $product) {
         $total += $product["amount"] * $product["price"];
     }
-    $_SESSION["product-cart-total"] = $total;
+    $_SESSION["productCartTotal"] = $total;
 
     $shipping = 20;
     if ($total > 52 && $total < 166.59) {
@@ -97,22 +97,30 @@ function updateProductTotal()
 
 function checkout()
 {
-    if (count($_SESSION["product-cart"]) == 0) {
+    if (count($_SESSION["productCart"]) == 0) {
         return;
     }
 
-    foreach ($_SESSION["product-cart"] as $productId => $product) {
+    foreach ($_SESSION["productCart"] as $productId => $product) {
         updateProductStock($productId, $product["stock"] - $product["amount"]);
     }
 
     $order = new Order(
         0,
-        $_SESSION["product-cart-total"] + $_SESSION["order-shipping"],
+        $_SESSION["productCartTotal"] + $_SESSION["order-shipping"],
         date("Y-m-d")
     );
     insertOrder($order);
 
-    unset($_SESSION["product-cart"]);
-    $_SESSION["product-cart"] = [];
+    unset($_SESSION["productCart"]);
+    $_SESSION["productCart"] = [];
     updateProductTotal();
+
+    return json_encode(array(
+        "success" => true,
+        "title" => "Compra bem-sucedida",
+        "message" => nl2br("Compra realizada com sucesso\n"
+            . "Total: R$" . number_format($order->getTotal(), 2) . "\n"
+            . "Data: " . $order->getdate())
+    ));
 }

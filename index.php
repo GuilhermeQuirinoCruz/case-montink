@@ -4,12 +4,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-require_once __DIR__ . "/src/model/order.php";
+// require_once __DIR__ . "/src/model/order.php";
 
-if (!isset($_SESSION["product-cart"])) {
-    $_SESSION["product-cart"] = [];
-    $_SESSION["product-cart-total"] = 0;
-    $_SESSION["order-shipping"] = 0;
+if (!isset($_SESSION["productCart"])) {
+    $_SESSION["productCart"] = [];
+    $_SESSION["productCartTotal"] = 0;
+    $_SESSION["orderShipping"] = 0;
 }
 ?>
 
@@ -30,15 +30,30 @@ if (!isset($_SESSION["product-cart"])) {
 </head>
 
 <body class="index">
-    <div class="container">
+    <div class="container-fluid px-4">
+        <div id="row">
+            <div class="column">
+                <div id="modalContainer"></div>
+            </div>
+        </div>
+
         <h1>Sistema ERP</h1>
         <div class="row justify-content-between">
             <div class="col-8 bg-warning mx-2">
-                <?php require_once "./src/view/product-form.php" ?>
-                <?php require_once "./src/view/product-list.php" ?>
+                <div id="productForm" class="row mx-2">
+                    <?php require_once "./src/view/product-form.php" ?>
+                </div>
+
+                <div class="row border-bottom border-3 border-dark mt-5 mb-5 mx-2 rounded"></div>
+
+                <div id="productList" class="row mx-2">
+                    <?php require_once "./src/view/product-list.php" ?>
+                </div>
             </div>
-            <div id="product-cart" class="col bg-danger">
-                <?php require_once "./src/view/product-cart.php" ?>
+            <div class="col bg-danger">
+                <div class="product-cart sticky-top" id="productCart">
+                    <?php require_once "./src/view/product-cart.php" ?>
+                </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

@@ -2,11 +2,13 @@ import {
   enforceNumbersOnly,
   getProductFromForm,
   sendAjaxRequest,
+  showMessageModal,
 } from "./utils.js";
 
 import { updateCartProduct } from "./product-cart.js";
+import { updateProductList } from "./product-list.js";
 
-function sendFormRequest(form, action, updateCart) {
+function sendFormRequest(form, action) {
   const product = getProductFromForm(form);
   const productIdInput = document.getElementById("productId");
   if (productIdInput) {
@@ -20,16 +22,37 @@ function sendFormRequest(form, action, updateCart) {
       action: action,
       product: product,
     },
-    async function (response) {
-      form.reset();
+    function (response) {
+      response = JSON.parse(response);
 
-      if (updateCart) {
-        await updateCartProduct("updateData", product["id"]);
+      showMessageModal(response["title"], response["message"]);
+
+      if (!response["success"]) {
+        return;
       }
 
-      location.reload();
+      switch (action) {
+        case "insert":
+          updateProductList();
+          break;
+        case "update":
+          updateCartProduct("updateData", product["id"]);
+          updateProductList();
+          break;
+      }
+
+      resetForm(form);
     }
   );
+}
+
+function resetForm() {
+  sendAjaxRequest("GET", "src/view/product-form.php", {}, function (response) {
+    document.getElementById("productForm").innerHTML = response;
+
+    addUpdateListeners();
+    addInsertListeners();
+  });
 }
 
 function addFormListeners() {
@@ -45,7 +68,7 @@ function addInsertListeners() {
   const btnInsert = document.getElementById("btnInsert");
   if (btnInsert) {
     btnInsert.addEventListener("click", (e) => {
-      sendFormRequest(document.getElementById("formProduct"), "insert", false);
+      sendFormRequest(document.getElementById("formProduct"), "insert");
     });
   }
 }
@@ -56,7 +79,7 @@ export function addUpdateListeners() {
   const btnUpdate = document.getElementById("btnUpdate");
   if (btnUpdate) {
     btnUpdate.addEventListener("click", (e) => {
-      sendFormRequest(document.getElementById("formProduct"), "update", true);
+      sendFormRequest(document.getElementById("formProduct"), "update");
     });
   }
 

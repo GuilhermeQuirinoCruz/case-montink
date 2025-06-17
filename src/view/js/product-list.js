@@ -3,7 +3,7 @@ import { addUpdateListeners } from "./product-form.js";
 import { updateCart, updateCartProduct } from "./product-cart.js";
 
 export function updateProductList() {
-  sendAjaxRequest("GET", "src/view/product-list.php", {}, function (response) {
+  sendAjaxRequest("GET", "src/view/product-list.php", function (response) {
     document.getElementById("productList").innerHTML = response;
     addListListeners();
   });
@@ -15,13 +15,13 @@ function addListListeners() {
       sendAjaxRequest(
         "POST",
         "src/view/product-form.php",
-        {
-          action: "fill",
-          productId: btn.getAttribute("productid"),
-        },
         function (response) {
           document.getElementById("productForm").innerHTML = response;
           addUpdateListeners();
+        },
+        {
+          action: "fill",
+          productId: btn.getAttribute("productid"),
         }
       );
     });
@@ -34,13 +34,13 @@ function addListListeners() {
       sendAjaxRequest(
         "POST",
         "src/controller/product-list-controller.php",
-        {
-          action: "delete",
-          productId: productId,
-        },
         async function (response) {
           updateCartProduct("remove", productId);
           location.reload();
+        },
+        {
+          action: "delete",
+          productId: productId,
         }
       );
     });
@@ -51,12 +51,12 @@ function addListListeners() {
       sendAjaxRequest(
         "POST",
         "src/view/product-cart.php",
+        function (response) {
+          updateCart(response);
+        },
         {
           action: "add",
           productId: btn.getAttribute("productid"),
-        },
-        function (response) {
-          updateCart(response);
         }
       );
     });

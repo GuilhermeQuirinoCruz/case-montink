@@ -18,10 +18,6 @@ function sendFormRequest(form, action) {
   sendAjaxRequest(
     "POST",
     "src/controller/product-form-controller.php",
-    {
-      action: action,
-      product: product,
-    },
     function (response) {
       response = JSON.parse(response);
 
@@ -42,12 +38,16 @@ function sendFormRequest(form, action) {
       }
 
       resetForm(form);
-    }
+    },
+    {
+      action: action,
+      product: product,
+    },
   );
 }
 
 function resetForm() {
-  sendAjaxRequest("GET", "src/view/product-form.php", {}, function (response) {
+  sendAjaxRequest("GET", "src/view/product-form.php", function (response) {
     document.getElementById("productForm").innerHTML = response;
 
     addUpdateListeners();

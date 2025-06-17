@@ -91,7 +91,7 @@
                 <input class="form-control" type="number"
                     name="zipCode" id="zipCode"
                     minlength="8" maxlength="8"
-                    placeholder="1234567">
+                    placeholder="00000-000">
             </div>
         </div>
 

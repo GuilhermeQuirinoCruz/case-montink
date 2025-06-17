@@ -24,12 +24,12 @@ export function updateCartProduct(action, id) {
   sendAjaxRequest(
     "POST",
     "src/view/product-cart.php",
+    function (response) {
+      updateCart(response);
+    },
     {
       action: action,
       productId: id,
-    },
-    function (response) {
-      updateCart(response);
     }
   );
 }
@@ -40,12 +40,12 @@ function addRemoveListeners() {
       sendAjaxRequest(
         "POST",
         "src/view/product-cart.php",
+        function (response) {
+          updateCart(response);
+        },
         {
           action: "remove",
           productId: btn.getAttribute("productid"),
-        },
-        function (response) {
-          updateCart(response);
         }
       );
     });
@@ -64,13 +64,13 @@ function addUpdateAmountListeners() {
       sendAjaxRequest(
         "POST",
         "src/view/product-cart.php",
+        function (response) {
+          updateCart(response);
+        },
         {
           action: "updateAmount",
           productId: input.getAttribute("productid"),
           amount: input.value,
-        },
-        function (response) {
-          updateCart(response);
         }
       );
     });
@@ -79,28 +79,72 @@ function addUpdateAmountListeners() {
 
 function addZipCodeListeners() {
   const zipCode = document.getElementById("zipCode");
+  if (!zipCode) {
+    return;
+  }
 
   enforceNumbersOnly(zipCode, false);
+}
+
+function validateZipCode(zipCode) {
+  return zipCode.length == 8;
+}
+
+async function getAddressByZipCode(zipCode) {
+  return $.getJSON(
+    "https://viacep.com.br/ws/" + zipCode + "/json/?callback=?",
+    (response) => {
+      console.log(response);
+      return response;
+    }
+  ).fail(() => {
+    return { erro: true };
+  });
 }
 
 function addCheckoutListeners() {
   const btnCheckout = document.getElementById("btnCheckout");
   if (btnCheckout) {
-    btnCheckout.addEventListener("click", (e) => {
+    btnCheckout.addEventListener("click", async function (e) {
+      const zipCode = document.getElementById("zipCode").value;
+      if (!validateZipCode(zipCode)) {
+        showMessageModal("CEP inválido", "Confira o CEP e tente novamente");
+        return;
+      }
+
+      btnCheckout.disabled = true;
+      const address = await getAddressByZipCode(zipCode);
+      btnCheckout.disabled = false;
+      if (address["erro"]) {
+        showMessageModal("CEP incorreto", "Endereço não encontrado");
+        return;
+      }
+
       sendAjaxRequest(
         "POST",
         "src/controller/product-cart-controller.php",
-        {
-          action: "checkout",
-        },
         function (response) {
           response = JSON.parse(response);
 
           if (response["success"]) {
-            showMessageModal(response["title"], response["message"]);
+            let message = response["message"];
+            message +=
+              "<br />Enviado para: " +
+              address["logradouro"] +
+              ", " +
+              address["bairro"] +
+              ", " +
+              address["localidade"] +
+              " - " +
+              address["estado"];
+            
+            showMessageModal(response["title"], message);
             refreshProductCart();
             updateProductList();
           }
+        },
+        {
+          action: "checkout",
         }
       );
     });
@@ -108,7 +152,7 @@ function addCheckoutListeners() {
 }
 
 function refreshProductCart() {
-  sendAjaxRequest("GET", "src/view/product-cart.php", {}, function (response) {
+  sendAjaxRequest("GET", "src/view/product-cart.php", function (response) {
     updateCart(response);
   });
 }

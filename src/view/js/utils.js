@@ -10,11 +10,18 @@ export function getProductFromForm(form) {
   };
 }
 
-export async function sendAjaxRequest(type, url, data, successFunction) {
+export async function sendAjaxRequest(
+  type,
+  url,
+  successFunction = function () {},
+  data = {},
+  headers = {}
+) {
   return $.ajax({
     type: type,
     url: url,
     data: data,
+    headers: headers,
     success: successFunction,
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert("Status: " + textStatus);
@@ -27,13 +34,13 @@ export function showMessageModal(title, message) {
   sendAjaxRequest(
     "POST",
     "src/view/message-modal.php",
-    {
-      modalTitle: title,
-      modalMessage: message,
-    },
     function (response) {
       document.getElementById("modalContainer").innerHTML = response;
       $("#messageModal").modal("toggle");
+    },
+    {
+      modalTitle: title,
+      modalMessage: message,
     }
   );
 }

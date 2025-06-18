@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . "/../model/product.php";
 require_once __DIR__ . "/../model/order.php";
+require_once __DIR__ . "/../model/operation-status.php";
+require_once __DIR__ . "/utils.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST["action"])) {
@@ -80,6 +82,7 @@ function updateProductTotal()
 {
     $_SESSION["productCartTotal"] = 0;
     $total = 0;
+
     foreach ($_SESSION["productCart"] as $product) {
         $total += $product["amount"] * $product["price"];
     }
@@ -92,7 +95,7 @@ function updateProductTotal()
         $shipping = 0;
     }
 
-    $_SESSION["order-shipping"] = $shipping;
+    $_SESSION["orderShipping"] = $shipping;
 }
 
 function checkout()
@@ -108,19 +111,25 @@ function checkout()
     $order = new Order(
         0,
         $_SESSION["productCartTotal"] + $_SESSION["order-shipping"],
-        date("Y-m-d")
+        date("Y-m-d"),
+        $_POST["address"]
     );
-    insertOrder($order);
+
+    $status = insertOrder($order);
+    if (!$status->getSuccess()) {
+        return getStatusAsJSON(false, "Erro", $status->getMessage());
+    }
 
     unset($_SESSION["productCart"]);
     $_SESSION["productCart"] = [];
+
     updateProductTotal();
 
-    return json_encode(array(
-        "success" => true,
-        "title" => "Compra bem-sucedida",
-        "message" => nl2br("Compra realizada com sucesso\n"
+    return getStatusAsJSON(
+        true,
+        "Compra bem-sucedida",
+        "Compra realizada com sucesso\n"
             . "Total: R$" . number_format($order->getTotal(), 2) . "\n"
-            . "Data: " . $order->getdate())
-    ));
+            . "Data: " . $order->getdate()
+    );
 }

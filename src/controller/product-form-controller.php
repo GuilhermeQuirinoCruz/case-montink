@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../model/product.php";
+require_once __DIR__ . "/../model/operation-status.php";
+require_once __DIR__ . "/utils.php";
 
 $product = null;
 $fill = false;
@@ -21,65 +23,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return;
     }
 
-    $message = getInvalidDataMessage($product);
+    $message = getInvalidProductDataMessage($product);
     if (strlen($message) != 0) {
         echo getStatusAsJSON(false, "Informações incorretas", $message);
         return;
     }
 
-    $successMessage = "";
+    $status = null;
     switch ($_POST["action"]) {
         case "insert":
-            $successMessage = handleProductInsert($product);
+            $status = handleProductInsert($product);
             break;
         case "update":
-            $successMessage = handleProductUpdate($product);
+            $status = handleProductUpdate($product);
             break;
     }
 
-    echo getStatusAsJSON(true, "Operação bem-sucedida", $successMessage);
+    echo $status;
 }
 
-function getStatusAsJSON($success, $title, $message)
+function getServerErrorMessage($status)
 {
-    return json_encode(array(
-        "success" => $success,
-        "title" => $title,
-        "message" => nl2br($message)
-    ));
+    return getStatusAsJSON(false, "Erro", $status->getMessage());
 }
 
-function getInvalidDataMessage($product)
+function getSuccessJSON($message)
 {
-    $message = "";
-    if (strlen($product->getName()) == 0) {
-        $message .= "O nome não pode ser vazio\n";
-    }
-
-    if ($product->getStock() < 0) {
-        $message .= "O estoque deve ser um número maior ou igual a zero\n";
-    }
-
-    if ($product->getPrice() < 0) {
-        $message .= "O preço deve ser um número maior ou igual a zero";
-    }
-
-    $message = rtrim($message, "\n");
-
-    return $message;
+    return getStatusAsJSON(true, "Operação bem sucedida", $message);
 }
 
 function handleProductInsert($product)
 {
     $product->setId(0);
-    insertProduct($product);
+    $status = insertProduct($product);
+    if (!$status->getSuccess()) {
+        return getStatusAsJSON(false, "Erro", $status->getMessage());
+    }
 
-    return "Novo produto cadastrado: <strong>" . $product->getName() . "</strong>";
+    return getSuccessJSON("Novo produto cadastrado: <strong>" . $product->getName() . "</strong>");
 }
 
 function handleProductUpdate($product)
 {
-    updateProduct($product);
+    $status = updateProduct($product);
+    if (!$status->getSuccess()) {
+        return getStatusAsJSON(false, "Erro", $status->getMessage());
+    }
 
-    return "Produto editado com sucesso";
+    return getSuccessJSON("Produto editado com sucesso");
 }

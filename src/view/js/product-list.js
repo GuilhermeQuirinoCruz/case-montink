@@ -1,4 +1,4 @@
-import { sendAjaxRequest } from "./utils.js";
+import { sendAjaxRequest, showMessageModal } from "./utils.js";
 import { addUpdateListeners } from "./product-form.js";
 import { updateCart, updateCartProduct } from "./product-cart.js";
 
@@ -16,8 +16,10 @@ function addListListeners() {
         "POST",
         "src/view/product-form.php",
         function (response) {
-          document.getElementById("productForm").innerHTML = response;
+          const productForm = document.getElementById("productForm");
+          productForm.innerHTML = response;
           addUpdateListeners();
+          productForm.scrollIntoView();
         },
         {
           action: "fill",
@@ -34,9 +36,17 @@ function addListListeners() {
       sendAjaxRequest(
         "POST",
         "src/controller/product-list-controller.php",
-        async function (response) {
+        function (response) {
+          response = JSON.parse(response);
+
+          showMessageModal(response["title"], response["message"]);
+
+          if (!response["success"]) {
+            return;
+          }
+
           updateCartProduct("remove", productId);
-          location.reload();
+          updateProductList();
         },
         {
           action: "delete",

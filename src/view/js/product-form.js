@@ -1,5 +1,6 @@
 import {
   enforceNumbersOnly,
+  formatToCurrencyOnChange,
   getProductFromForm,
   sendAjaxRequest,
   showMessageModal,
@@ -14,6 +15,8 @@ function sendFormRequest(form, action) {
   if (productIdInput) {
     product["id"] = productIdInput.value;
   }
+
+  product["price"] = product["price"].replaceAll(",", "");
 
   sendAjaxRequest(
     "POST",
@@ -60,7 +63,10 @@ function addFormListeners() {
     e.preventDefault();
   });
 
-  enforceNumbersOnly(document.getElementById("productPrice"), true);
+  const productPrice = document.getElementById("productPrice");
+  enforceNumbersOnly(productPrice, true);
+  formatToCurrencyOnChange(productPrice);
+
   enforceNumbersOnly(document.getElementById("productStock"), false);
 }
 

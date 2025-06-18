@@ -28,10 +28,10 @@
 
         <?php
         if (count($_SESSION["productCart"]) == 0) {
-            echo "<div class='row'>";
+            echo "<div class='product-cart-empty row'>";
 
-            echo "<div class='col d-flex flex-column align-items-center text-center p-2 mx-3'>";
-            echo "<h5>Carrinho vazio</h5>";
+            echo "<div class='col d-flex flex-column align-items-center justify-content-center gap-3 text-center p-2 mx-3'>";
+            echo "<h4>Carrinho vazio</h4>";
             echo "Adicione produtos ao carrinho para realizar uma compra";
             echo "</div>";
 
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="product-cart-checkout row">
+        <div class="product-cart-pricing row">
             <div class="col p-2 d-flex justify-content-start align-items-center text-center">
                 <?php echo "Subtotal: R$" . formatPrice($_SESSION["productCartTotal"]); ?>
             </div>
@@ -85,12 +85,11 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="product-cart-zipcode row">
             <div class="col p-2">
-                CEP (apenas números):
-                <input class="form-control" type="number"
+                <label class='form-label' for="zipCode">CEP (apenas números):</label>
+                <input class="form-control" type="text"
                     name="zipCode" id="zipCode"
-                    minlength="8" maxlength="8"
                     placeholder="00000-000">
             </div>
         </div>

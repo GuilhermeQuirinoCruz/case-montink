@@ -26,9 +26,21 @@ if (count($products) == 0) {
                     <th>Preço (R$)</th>
                     <th>Variações</th>
                     <th>Estoque</th>
-                    <th>Editar</th>
-                    <th>Excluir</th>
-                    <th>Comprar</th>
+                    <th>
+                        <div class="d-flex justify-content-center">
+                            Editar
+                        </div>
+                    </th>
+                    <th>
+                        <div class="d-flex justify-content-center">
+                            Excluir
+                        </div>
+                    </th>
+                    <th>
+                        <div class="d-flex justify-content-center">
+                            Comprar
+                        </div>
+                    </th>
                 </tr>
             </thead>
 

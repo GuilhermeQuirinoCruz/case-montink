@@ -1,12 +1,30 @@
+.product-cart {
+    top: 2vh;
+}
+
+.product-cart-empty {
+    height: 70vh;
+    background-color: coral;
+}
+
 .product-cart-title {
+    height: 10vh;
     background-color: yellow;
 }
 
 .product-cart-list {
-    height: 60vh;
+    height: 50vh;
     background-color: chartreuse;
 }
 
-.product-cart {
-    top: 10px;
+/* .product-cart-pricing {
+    height: 5vh;
 }
+
+.product-cart-zipcode {
+    height: 10vh;
+}
+
+.product-cart-checkout {
+    height: 5vh;
+} */

@@ -45,41 +45,41 @@ export function showMessageModal(title, message) {
   );
 }
 
-export function enforceNumbersOnly(input, isFloat) {
-  input.addEventListener("keypress", (e) => {
-    if (isDigit(e.key)) {
-      return;
-    }
-
-    if (isFloat && e.key == ".") {
-      return;
-    }
-
-    e.preventDefault();
-
-    // if (e.key != "." || !isFloat) {
-    //   e.preventDefault();
-    //   return;
-    // }
-
-    // if (input.value.includes(".")) {
-    //   e.preventDefault();
-    // }
-  });
-
-  // input.addEventListener("paste", (e) => {
-  //   const previousValue = input.value;
-  //   let pastedValue = e.clipboardData.getData("text");
-
-  //   pastedValue = pastedValue.replace(/\D/g, "");
-  //   if (!isFloat) {
-  //     pastedValue = pastedValue.replace(/\./, "");
-  //   }
-
-  //   input.value = previousValue + pastedValue;
-  // });
+function replaceInteger(input) {
+  input.value = input.value.replace(/\D/g, "");
 }
 
-function isDigit(value) {
-  return value in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+function replaceFloat(input) {
+  input.value = input.value
+    .replace(/[^\d.]/g, "")
+    .replace(/\.([.\d]+)$/, function (m, m1) {
+      return "." + m1.replace(/\./g, "");
+    });
+}
+
+export function formatToCurrencyOnChange(input) {
+  input.addEventListener("change", (e) => {
+    input.value = parseFloat(input.value).toLocaleString("en-US", {
+      style: "decimal",
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    });
+  });
+}
+
+export function enforceNumbersOnly(input, isFloat) {
+  input.addEventListener("input", (e) => {
+    if (isFloat) {
+      replaceFloat(input);
+      return;
+    }
+
+    replaceInteger(input);
+  });
+}
+
+export function enforceLength(input, maxLength) {
+  input.addEventListener("input", (e) => {
+    input.value = input.value.substring(0, maxLength);
+  });
 }

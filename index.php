@@ -4,8 +4,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// require_once __DIR__ . "/src/model/order.php";
-
 if (!isset($_SESSION["productCart"])) {
     $_SESSION["productCart"] = [];
     $_SESSION["productCartTotal"] = 0;

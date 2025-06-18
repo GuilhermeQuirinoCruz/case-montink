@@ -30,7 +30,7 @@ require_once __DIR__ . "/../controller/product-form-controller.php";
 
     <div class="mb-3">
         <label class='form-label' for="productPrice">Preço (R$):</label>
-        <input class="form-control" type="number" min=0
+        <input class="form-control" type="text"
             name="productPrice" id="productPrice"
             value=<?php echo $product ? $product->getPrice() : "0"; ?>
             required>
@@ -48,7 +48,7 @@ require_once __DIR__ . "/../controller/product-form-controller.php";
 
     <div class="mb-3">
         <label class='form-label' for="productStock">Estoque:</label>
-        <input class="form-control" type="number" min=0
+        <input class="form-control" type="text"
             name="productStock" id="productStock"
             value=<?php echo $product ? $product->getStock() : "0"; ?>
             required>

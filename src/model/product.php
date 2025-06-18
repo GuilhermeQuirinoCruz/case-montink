@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../controller/db.php";
+require_once __DIR__ . "/operation-status.php";
 
 class Product
 {
@@ -96,35 +97,35 @@ function getProductFromRequest($request): Product
     return new Product(
         is_numeric($id) ? intval(htmlspecialchars($id)) : -1,
         $name ? htmlspecialchars($name) : "",
-        is_numeric($price) ? intval(htmlspecialchars($price)) : -1,
+        is_numeric($price) ? floatval(htmlspecialchars($price)) : -1,
         $variations ? htmlspecialchars($variations) : "",
         is_numeric($stock) ? intval(htmlspecialchars($stock)) : -1,
     );
 }
 
-function validadeProductData($product) {
-    return $product->getName() != "";
-}
-
 function getProductById($id)
 {
-    $pdo = getPdo();
-    $query = "
-    SELECT p.id, p.nome, p.preco, p.variacoes, e.quantidade
-    FROM produto AS p
-    JOIN estoque AS e ON p.id = e.id_produto
-    WHERE p.id = :id_produto";
+    try {
+        $pdo = getPdo();
+        $query = "
+        SELECT p.id, p.nome, p.preco, p.variacoes, e.quantidade
+        FROM produto AS p
+        JOIN estoque AS e ON p.id = e.id_produto
+        WHERE p.id = :id_produto";
 
-    $stmt = $pdo->prepare($query);
+        $stmt = $pdo->prepare($query);
 
-    $stmt->execute([
-        ":id_produto" => $id,
-    ]);
+        $stmt->execute([
+            ":id_produto" => $id,
+        ]);
 
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-    $product = getProductFromData($data);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $product = getProductFromData($data);
 
-    return $product;
+        return $product;
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
 function getAllProducts(): array
@@ -140,15 +141,14 @@ function getAllProducts(): array
         $stmt = $pdo->query($query);
 
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         return array_map("getProductFromData", $data);
     } catch (Exception $e) {
-        echo $e;
         return [];
     }
 }
 
-function insertProduct($product)
+function insertProduct($product): OperationStatus
 {
     try {
         $pdo = getPdo();
@@ -171,12 +171,14 @@ function insertProduct($product)
             ":variacoes" => $product->getVariations(),
             ":quantidade" => $product->getStock()
         ]);
+
+        return new OperationStatus(true, "");
     } catch (Exception $e) {
-        echo $e;
+        return new OperationStatus(false, getErrorMessageFromException($e));
     }
 }
 
-function updateProduct($product)
+function updateProduct($product): OperationStatus
 {
     try {
         $pdo = getPdo();
@@ -202,12 +204,14 @@ function updateProduct($product)
             ":variacoes" => $product->getVariations(),
             ":quantidade" => $product->getStock()
         ]);
+
+        return new OperationStatus(true, "");
     } catch (Exception $e) {
-        echo $e;
+        return new OperationStatus(false, getErrorMessageFromException($e));
     }
 }
 
-function deleteProduct($id)
+function deleteProduct($id): OperationStatus
 {
     try {
         $pdo = getPdo();
@@ -225,12 +229,15 @@ function deleteProduct($id)
         $stmt->execute([
             ":id_produto" => $id
         ]);
+
+        return new OperationStatus(true, "");
     } catch (Exception $e) {
-        echo $e;
+        return new OperationStatus(false, getErrorMessageFromException($e));
     }
 }
 
-function updateProductStock($id, $stock) {
+function updateProductStock($id, $stock) : OperationStatus
+{
     try {
         $pdo = getPdo();
 
@@ -249,7 +256,29 @@ function updateProductStock($id, $stock) {
             ":id_produto" => $id,
             ":quantidade" => $stock
         ]);
+
+        return new OperationStatus(true, "");
     } catch (Exception $e) {
-        echo $e;
+        return new OperationStatus(false, getErrorMessageFromException($e));
     }
+}
+
+function getInvalidProductDataMessage($product)
+{
+    $message = "";
+    if (strlen($product->getName()) == 0) {
+        $message .= "O nome não pode ser vazio\n";
+    }
+
+    if ($product->getStock() < 0) {
+        $message .= "O estoque deve ser um número maior ou igual a zero\n";
+    }
+
+    if ($product->getPrice() < 0) {
+        $message .= "O preço deve ser um número maior ou igual a zero";
+    }
+
+    $message = rtrim($message, "\n");
+
+    return $message;
 }

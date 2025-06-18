@@ -6,7 +6,7 @@ USE erp;
 CREATE TABLE produto(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    preco DECIMAL(6,2) NOT NULL,
+    preco DECIMAL(15,2) NOT NULL,
     variacoes VARCHAR(100)
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE pedido(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     valor DECIMAL(6,2) NOT NULL,
     data DATE NOT NULL,
-    nome VARCHAR(150) NOT NULL
+    endereco VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE cupom(

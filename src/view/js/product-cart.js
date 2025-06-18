@@ -2,13 +2,14 @@ import {
   enforceNumbersOnly,
   sendAjaxRequest,
   showMessageModal,
+  enforceLength
 } from "./utils.js";
 
 import { updateProductList } from "./product-list.js";
 
 function setupCart() {
   addRemoveListeners();
-  addEnforceNumbersListeners();
+  addCartAmountListeners();
   addUpdateAmountListeners();
   addZipCodeListeners();
   addCheckoutListeners();
@@ -52,7 +53,7 @@ function addRemoveListeners() {
   });
 }
 
-function addEnforceNumbersListeners() {
+function addCartAmountListeners() {
   document.querySelectorAll("[name='productCartAmount']").forEach((input) => {
     enforceNumbersOnly(input, false);
   });
@@ -84,6 +85,7 @@ function addZipCodeListeners() {
   }
 
   enforceNumbersOnly(zipCode, false);
+  enforceLength(zipCode, 8);
 }
 
 function validateZipCode(zipCode) {
@@ -120,31 +122,35 @@ function addCheckoutListeners() {
         return;
       }
 
+      const fullAddress =
+        address["logradouro"] +
+        ", " +
+        address["bairro"] +
+        ", " +
+        address["localidade"] +
+        " - " +
+        address["estado"];
+
       sendAjaxRequest(
         "POST",
         "src/controller/product-cart-controller.php",
         function (response) {
           response = JSON.parse(response);
 
+          let message = response["message"];
+
           if (response["success"]) {
-            let message = response["message"];
-            message +=
-              "<br />Enviado para: " +
-              address["logradouro"] +
-              ", " +
-              address["bairro"] +
-              ", " +
-              address["localidade"] +
-              " - " +
-              address["estado"];
-            
-            showMessageModal(response["title"], message);
+            message += "<br />Enviado para: " + fullAddress;
+
             refreshProductCart();
             updateProductList();
           }
+          
+          showMessageModal(response["title"], message);
         },
         {
           action: "checkout",
+          address: fullAddress
         }
       );
     });

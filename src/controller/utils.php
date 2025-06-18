@@ -7,3 +7,8 @@ function getStatusAsJSON($success, $title, $message)
         "message" => nl2br($message)
     ));
 }
+
+function formatPrice($price)
+{
+    return number_format($price, 2);
+}

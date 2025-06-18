@@ -39,7 +39,7 @@ if (!isset($_SESSION["productCart"])) {
             <div class="column m-3">
                 <div class="d-flex flex-column justify-content-center">
                     <h1 class="display-4 text-white">
-                        <strong>Sistema ERP</strong>
+                        <strong>💡 Sistema ERP</strong>
                     </h1>
                 </div>
             </div>

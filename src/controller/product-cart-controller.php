@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
     }
 
-    updateProductTotal();
+    updateProductCartTotal();
 }
 
 function setProductData($id)
@@ -48,11 +48,12 @@ function setProductData($id)
 function addProductToCart($id)
 {
     if (isset($_SESSION["productCart"][$id])) {
+        updateProductAmount($id, $_SESSION["productCart"][$id]["amount"] + 1);
         return;
     }
 
     setProductData($id);
-    updateProductAmount($id, 1);
+    // updateProductAmount($id, 1);
 }
 
 function removeProductFromCart($id)
@@ -62,7 +63,11 @@ function removeProductFromCart($id)
 
 function updateProductAmount($id, $amount)
 {
-    if (!isset($_SESSION["productCart"][$id])) {
+    if (
+        !isset($_SESSION["productCart"][$id]) ||
+        $amount < 0 ||
+        $amount > $_SESSION["productCart"][$id]["stock"]
+    ) {
         return;
     }
 
@@ -75,10 +80,20 @@ function updateProductData($id)
         return;
     }
 
+    $amount = $_SESSION["productCart"][$id]["amount"];
+    
     setProductData($id);
+
+    $stock = $_SESSION["productCart"][$id]["stock"];
+    if ($stock <= 0) {
+        removeProductFromCart($id);
+        return;
+    }
+
+    updateProductAmount($id, min($stock, $amount));
 }
 
-function updateProductTotal()
+function updateProductCartTotal()
 {
     $_SESSION["productCartTotal"] = 0;
     $total = 0;
@@ -123,7 +138,7 @@ function checkout()
     unset($_SESSION["productCart"]);
     $_SESSION["productCart"] = [];
 
-    updateProductTotal();
+    updateProductCartTotal();
 
     return getStatusAsJSON(
         true,

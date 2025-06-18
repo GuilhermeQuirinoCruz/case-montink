@@ -3,14 +3,15 @@
 
 <?php
 require_once __DIR__ . "/../controller/product-form-controller.php";
+require_once __DIR__ . "/../controller/utils.php";
 ?>
 
 <div class="row mx-1 py-3">
-    <div class="col">
+    <div class="col d-flex flex-column align-items-center">
         <?php
         if ($product) {
             echo "
-            <h1 class='fw-bold'>Editar produto:</h1>" .
+            <h1 class='fw-bold'>Editar produto</h1>" .
                 "<h2>" . $product->getName() . "</h2>";
         } else {
             echo "
@@ -47,7 +48,8 @@ require_once __DIR__ . "/../controller/product-form-controller.php";
                 <label class='form-label' for="productPrice">Preço (R$):</label>
                 <input class="form-control" type="text"
                     name="productPrice" id="productPrice"
-                    value=<?php echo $product ? $product->getPrice() : "0"; ?>
+                    value="<?php echo $product ? formatPrice($product->getPrice()) : ""; ?>"
+                    placeholder="0.00"
                     required>
             </div>
 

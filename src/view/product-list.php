@@ -7,15 +7,23 @@
 
 <?php
 require_once __DIR__ . "/../controller/product-list-controller.php";
+require_once __DIR__ . "/../controller/utils.php";
 ?>
 
 <div class="row mx-1 py-3">
     <div class="col">
         <?php
         if (count($products) == 0) {
+            echo "<div class='d-flex py-4 justify-content-center'>";
             echo "<h1>Não há produtos cadastrados</h1>";
+            echo "</div>";
+            echo "</div>";
+            echo "</div>";
+            return;
         } else {
+            echo "<div class='d-flex justify-content-center'>";
             echo "<h1>Lista de Produtos Cadastrados</h1>";
+            echo "</div>";
         }
         ?>
     </div>
@@ -24,7 +32,7 @@ require_once __DIR__ . "/../controller/product-list-controller.php";
 <div class="row p-3">
     <div class="col">
         <div class="table-responsive rounded">
-            <div class="overflow-scroll" style="height: 25rem;">
+            <div class="overflow-scroll" style="max-height: 20rem;">
                 <table class="table table-striped table-hover table-product-list">
                     <thead>
                         <tr class="align-middle">
@@ -56,7 +64,7 @@ require_once __DIR__ . "/../controller/product-list-controller.php";
                             <tr class="align-middle">
                                 <td><?php echo $product->getId() ?></td>
                                 <td><?php echo $product->getName() ?></td>
-                                <td><?php echo number_format($product->getPrice(), 2) ?></td>
+                                <td><?php echo formatPrice($product->getPrice()) ?></td>
                                 <td style="white-space: pre-wrap;" ;><?php echo $product->getVariations() ?></td>
                                 <td><?php echo $product->getStock() ?></td>
                                 <td>

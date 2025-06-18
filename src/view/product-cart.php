@@ -7,11 +7,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once __DIR__ . "/../controller/product-cart-controller.php";
-
-function formatPrice($price)
-{
-    return number_format($price, 2);
-}
+require_once __DIR__ . "/../controller/utils.php";
 ?>
 
 <style>
@@ -26,7 +22,7 @@ function formatPrice($price)
 
 <?php
 if (count($_SESSION["productCart"]) == 0) {
-    echo "<div class='product-cart-empty row rounded text-bg-secondary'>";
+    echo "<div class='product-cart-empty row text-bg-secondary mt-2 rounded'>";
 
     echo "<div class='col d-flex flex-column align-items-center justify-content-center gap-3 text-center p-2 mx-3'>";
     echo "<h4>Carrinho vazio</h4>";
@@ -96,6 +92,6 @@ if (count($_SESSION["productCart"]) == 0) {
 
 <div class="product-cart-checkout row mt-2">
     <div class="col d-flex justify-content-end p-0">
-        <button class="btn text-bg-light" id="btnCheckout">Comprar</button>
+        <button class="btn btn-light" id="btnCheckout">Comprar</button>
     </div>
 </div>

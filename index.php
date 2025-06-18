@@ -27,28 +27,42 @@ if (!isset($_SESSION["productCart"])) {
     <title>Sistema ERP</title>
 </head>
 
-<body class="index">
-    <div class="container-fluid px-4">
+<body class="index mb-4">
+    <div class="container p-0">
         <div id="row">
             <div class="column">
                 <div id="modalContainer"></div>
             </div>
         </div>
 
-        <h1>Sistema ERP</h1>
-        <div class="row justify-content-between">
-            <div class="col-8 bg-warning mx-2">
-                <div id="productForm" class="row mx-2">
-                    <?php require_once "./src/view/product-form.php" ?>
-                </div>
-
-                <div class="row border-bottom border-3 border-dark mt-5 mb-5 mx-2 rounded"></div>
-
-                <div id="productList" class="row mx-2">
-                    <?php require_once "./src/view/product-list.php" ?>
+        <div class="row px-2 py-3">
+            <div class="column m-3">
+                <div class="d-flex flex-column justify-content-center">
+                    <h1 class="display-4 text-white">
+                        <strong>Sistema ERP</strong>
+                    </h1>
                 </div>
             </div>
-            <div class="col bg-danger">
+        </div>
+
+        <div class="row justify-content-between">
+            <div class="col-8 pe-5">
+                <div class="row">
+                    <div id="productForm" class="col text-bg-light rounded">
+                        <?php require_once "./src/view/product-form.php" ?>
+                    </div>
+                </div>
+
+                <div class="row border-bottom border-3 border-dark my-4 mx-2 rounded"></div>
+
+                <div class="row">
+                    <div id="productList" class="col text-bg-light rounded">
+                        <?php require_once "./src/view/product-list.php" ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4">
                 <div class="product-cart sticky-top" id="productCart">
                     <?php require_once "./src/view/product-cart.php" ?>
                 </div>
@@ -56,7 +70,6 @@ if (!isset($_SESSION["productCart"])) {
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     </div>
-    <br>
 </body>
 
 </html>

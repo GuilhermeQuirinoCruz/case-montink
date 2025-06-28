@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . "/../model/product.php";
-require_once __DIR__ . "/../model/order.php";
-require_once __DIR__ . "/../model/operation-status.php";
-require_once __DIR__ . "/utils.php";
+require_once $BASE_PATH . "/controller/utils.php";
+require_once $BASE_PATH . "/model/product.php";
+require_once $BASE_PATH . "/model/order.php";
+require_once $BASE_PATH . "/model/operation-status.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST["action"])) {

@@ -3,7 +3,7 @@ import {
   sendAjaxRequest,
   showMessageModal,
   enforceLength
-} from "./utils.js";
+} from "../js/utils.js";
 
 import { updateProductList } from "./product-list.js";
 
@@ -24,7 +24,7 @@ export function updateCart(html) {
 export function updateCartProduct(action, id) {
   sendAjaxRequest(
     "POST",
-    "src/view/product-cart.php",
+    "/product/product-cart.php",
     function (response) {
       updateCart(response);
     },
@@ -40,7 +40,7 @@ function addRemoveListeners() {
     btn.addEventListener("click", (e) => {
       sendAjaxRequest(
         "POST",
-        "src/view/product-cart.php",
+        "/product/product-cart.php",
         function (response) {
           updateCart(response);
         },
@@ -64,7 +64,7 @@ function addUpdateAmountListeners() {
     input.addEventListener("change", (e) => {
       sendAjaxRequest(
         "POST",
-        "src/view/product-cart.php",
+        "/product/product-cart.php",
         function (response) {
           updateCart(response);
         },
@@ -133,7 +133,7 @@ function addCheckoutListeners() {
 
       sendAjaxRequest(
         "POST",
-        "src/controller/product-cart-controller.php",
+        "/../controller/product-cart-controller.php",
         function (response) {
           response = JSON.parse(response);
 
@@ -158,7 +158,7 @@ function addCheckoutListeners() {
 }
 
 function refreshProductCart() {
-  sendAjaxRequest("GET", "src/view/product-cart.php", function (response) {
+  sendAjaxRequest("GET", "/product/product-cart.php", function (response) {
     updateCart(response);
   });
 }

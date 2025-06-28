@@ -4,7 +4,7 @@ import {
   getProductFromForm,
   sendAjaxRequest,
   showMessageModal,
-} from "./utils.js";
+} from "../js/utils.js";
 
 import { updateCartProduct } from "./product-cart.js";
 import { updateProductList } from "./product-list.js";
@@ -20,7 +20,7 @@ function sendFormRequest(form, action) {
 
   sendAjaxRequest(
     "POST",
-    "src/controller/product-form-controller.php",
+    "/../controller/product-form-controller.php",
     function (response) {
       response = JSON.parse(response);
 
@@ -50,7 +50,7 @@ function sendFormRequest(form, action) {
 }
 
 function resetForm() {
-  sendAjaxRequest("GET", "src/view/product-form.php", function (response) {
+  sendAjaxRequest("GET", "/product/product-form.php", function (response) {
     document.getElementById("productForm").innerHTML = response;
 
     addUpdateListeners();

@@ -10,30 +10,33 @@ export function getProductFromForm(form) {
   };
 }
 
-export async function sendAjaxRequest(
+function defaultErrorFunction(XMLHttpRequest, textStatus, errorThrown) {
+  alert("Status: " + textStatus);
+  alert("Error: " + errorThrown);
+}
+
+export function sendAjaxRequest(
   type,
   url,
   successFunction = function () {},
   data = {},
-  headers = {}
+  headers = {},
+  errorFunction = defaultErrorFunction
 ) {
-  return $.ajax({
+  $.ajax({
     type: type,
     url: url,
     data: data,
     headers: headers,
-    success: successFunction,
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert("Status: " + textStatus);
-      alert("Error: " + errorThrown);
-    },
-  });
+  })
+    .done(successFunction)
+    .fail(errorFunction);
 }
 
 export function showMessageModal(title, message) {
   sendAjaxRequest(
     "POST",
-    "src/view/message-modal.php",
+    "/template/message-modal.php",
     function (response) {
       document.getElementById("modalContainer").innerHTML = response;
       $("#messageModal").modal("toggle");
@@ -82,4 +85,8 @@ export function enforceLength(input, maxLength) {
   input.addEventListener("input", (e) => {
     input.value = input.value.substring(0, maxLength);
   });
+}
+
+export function teste() {
+  alert("aa");
 }

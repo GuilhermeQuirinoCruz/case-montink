@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../model/product.php";
-require_once __DIR__ . "/utils.php";
+require_once $BASE_PATH . "/controller/utils.php";
+require_once $BASE_PATH . "/model/product.php";
 
 $products = getAllProducts();
 

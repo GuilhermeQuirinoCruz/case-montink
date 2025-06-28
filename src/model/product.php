@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../controller/db.php";
-require_once __DIR__ . "/operation-status.php";
+require_once $BASE_PATH . "/controller/db.php";
+require_once $BASE_PATH . "/model/operation-status.php";
 
 class Product
 {
@@ -236,7 +236,7 @@ function deleteProduct($id): OperationStatus
     }
 }
 
-function updateProductStock($id, $stock) : OperationStatus
+function updateProductStock($id, $stock): OperationStatus
 {
     try {
         $pdo = getPdo();

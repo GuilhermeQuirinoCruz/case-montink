@@ -1,14 +1,9 @@
-<script type="module" language="javascript" src="/src/view/js/product-list.js">
-</script>
+<?php require_once $BASE_PATH . "/controller/product-list-controller.php"; ?>
+<?php require_once $BASE_PATH . "/controller/utils.php"; ?>
 
 <style>
-    <?php require_once __DIR__ . "/css/product-list.css"; ?>
+    <?php require_once $BASE_PATH . "/view/product/product-list.css"; ?>
 </style>
-
-<?php
-require_once __DIR__ . "/../controller/product-list-controller.php";
-require_once __DIR__ . "/../controller/utils.php";
-?>
 
 <div class="row mx-1 py-3">
     <div class="col">
@@ -100,3 +95,11 @@ require_once __DIR__ . "/../controller/utils.php";
         </div>
     </div>
 </div>
+
+<?php
+echo $BASE_PATH . "/view/product/product-list.js";
+?>
+
+<script type="module">
+    <?php require_once $BASE_PATH . "/view/product/product-list.js" ?>
+</script>

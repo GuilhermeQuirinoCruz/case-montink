@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../controller/db.php";
-require_once __DIR__ . "/operation-status.php";
+require_once $BASE_PATH . "/controller/db.php";
+require_once $BASE_PATH . "/model/operation-status.php";
 
 class Order
 {
@@ -55,6 +55,33 @@ class Order
     function setAddress($Address)
     {
         $this->address = $Address;
+    }
+}
+
+function getOrderFromData($data)
+{
+    return new Order(
+        $data["id"],
+        $data["valor"],
+        $data["data"],
+        $data["endereco"]
+    );
+}
+
+function getAllOrders(): array
+{
+    try {
+        $pdo = getPdo();
+        $query = "
+        SELECT * FROM pedido;";
+
+        $stmt = $pdo->query($query);
+
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map("getOrderFromData", $data);
+    } catch (Exception $e) {
+        return [];
     }
 }
 

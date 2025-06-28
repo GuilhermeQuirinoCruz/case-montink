@@ -1,10 +1,5 @@
-<script type="module" language="javascript" src="/src/view/js/product-form.js">
-</script>
-
-<?php
-require_once __DIR__ . "/../controller/product-form-controller.php";
-require_once __DIR__ . "/../controller/utils.php";
-?>
+<?php require_once $BASE_PATH . "/controller/product-form-controller.php"; ?>
+<?php require_once $BASE_PATH . "/controller/utils.php"; ?>
 
 <div class="row mx-1 py-3">
     <div class="col d-flex flex-column align-items-center">
@@ -46,11 +41,14 @@ require_once __DIR__ . "/../controller/utils.php";
 
             <div class="mb-3">
                 <label class='form-label' for="productPrice">Preço (R$):</label>
-                <input class="form-control" type="text"
-                    name="productPrice" id="productPrice"
-                    value="<?php echo $product ? formatPrice($product->getPrice()) : ""; ?>"
-                    placeholder="0.00"
-                    required>
+                <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input class="form-control" type="text"
+                        name="productPrice" id="productPrice"
+                        value="<?php echo $product ? formatPrice($product->getPrice()) : ""; ?>"
+                        placeholder="0.00"
+                        required>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -94,3 +92,7 @@ require_once __DIR__ . "/../controller/utils.php";
         </form>
     </div>
 </div>
+
+<script type="module">
+    <?php require_once $BASE_PATH . "/view/product/product-form.js" ?>
+</script>

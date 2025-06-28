@@ -1,17 +1,14 @@
-<script type="module" language="javascript" src="/src/view/js/product-cart.js">
-</script>
-
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
-
-require_once __DIR__ . "/../controller/product-cart-controller.php";
-require_once __DIR__ . "/../controller/utils.php";
 ?>
 
+<?php require_once $BASE_PATH . "/controller/product-cart-controller.php"; ?>
+<?php require_once $BASE_PATH . "/controller/utils.php"; ?>
+
 <style>
-    <?php require_once __DIR__ . "/css/product-cart.css"; ?>
+    <?php require_once $BASE_PATH . "/view/product/product-cart.css"; ?>
 </style>
 
 <div class="product-cart-title row rounded text-bg-light">
@@ -95,3 +92,7 @@ if (count($_SESSION["productCart"]) == 0) {
         <button class="btn btn-light" id="btnCheckout">Comprar</button>
     </div>
 </div>
+
+<script type="module">
+    <?php require_once $BASE_PATH . "/view/product/product-cart.js" ?>
+</script>
